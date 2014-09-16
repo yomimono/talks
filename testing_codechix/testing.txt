@@ -1,0 +1,60 @@
+what do I mean by 'testing'
+	- given some description of the correcct operation of your software, ensure your software operates in that manner before releasing
+	- figuring out "correct operation" is the build of the work of testing
+	- encompasses:
+		* the program handles bad input correctly
+		* the program handles system failures and exceptions gracefully
+		* the program correctly processes good input if all is well ("happy path" testing)
+	- (most people focus solely on the last, but most software bugs are in the first two)
+	- I'm going to talk about doing this in an automated way as part of a development process but there are other kinds of testing
+
+why test?
+	- if you're not doing it, your users (or your QA people, or your support people, or your developers) are
+	- these people usually can't and often won't give you good bug reports
+	- sometimes they won't even tell you things are broken
+		* they don't realize it's broken and make process around it, which breaks if you ever do fix the problem
+		* they realize it's broken but grumpily live with it because it's too much work to tell you about it
+		* they realize it's broken, decide they don't want to live with it, and stop using your software (or advocate against it)
+	- as you have more user-visible bugs, the likely response degrades from the top of that list to the bottom
+	- you can't catch all bugs with testing, which is why it's so important to catch the ones you can; you want users to stay at the top of the list, since user patience is an exhaustible resource
+
+how to test
+	there are loads of different ways to slice testing; the categories I'm about to present can overlap with other categories and each other
+	unit tests (TDD)
+		* the name of the talk is "beyond jUnit", so I won't go too in depth on this
+		* generally take the form of assertions about data (usually return values from a function) in your code
+		* unit tests are kinda valuable when you're writing a module for the first time (sidenote here on TDD)
+		* unit tests are REALLY valuable when you're rewriting a module, refactoring trying a new integration, etc - basically any time you have to touch your code again after a long time away
+		* talk about the common case where you inherit code with no tests and then have to make a change - shoutout to "working effectively with legacy code" and "refactoring"
+		* you can end up with A LOT of these, especially if you're trying to test for our first two cases: bad input and bad environment
+	- generative tests
+		* let you test assertions about your code, not just about data
+		* let you test a wide range of possible inputs without having to hand-write the tests
+		* randomness tests things you didn't think of, which are the problems you're most likely to have in the first place
+		* show a demo of Scott's JS quickCheck?
+		* http://spiegela.com/2014/04/02/property-based-or-generative-testing-part-0/ for a generalist/Rubyist look
+	integration tests
+		* make sure your code works right with all the other pieces
+		* usually higher-level and require some infrastructure, e.g. a test database server for a web application
+		* a few frameworks
+		* continuous integration and travis
+	performance tests
+		* bad performance is a bug - the right answer, twenty minutes after I needed it, is as bad as no answer
+		* consider the whole application - your webapp's javascript can be blazing fast, but that doesn't help you if everything depends on a slow database query
+		* frameworks and their capabilities vary widely by platform, but here are some examples
+	whatever kind of thing selenium is?
+	mobile app automated testing frameworks?
+	---- mental line here; above and below are IMO different ways to slice things
+	regression tests - basically, run all your tests before releasing (whatever kind they are)
+		* once you squash a bug, it stays dead
+	manual tests (QA)
+		* an even better way to get at bugs you never imagined
+		* a talented QA team can give you ideas for automated tests as well
+	user experience tests
+		* bad UX is a bug
+		* "correct" and "incorrect" aren't applicable concepts here; instead the field uses statistical tools to evaluate outcomes
+		* A/B tests and frameworks
+		* you can get good return: http://www.uie.com/articles/three_hund_million_button/
+		* and you don't necessarily have to spend a lot of money: http://uxmyths.com/post/831431504/myth-22-usability-testing-is-expensive
+
+netflix's chaos monkey (not sure where to put this)
