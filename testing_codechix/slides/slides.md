@@ -1,5 +1,5 @@
 % title: Testing Beyond jUnit
-% subtitle: (so your users don't have to do it for you)
+% subtitle: (a Madison-Milwaukee CodeChix Talk)
 % author: Mindy Preston
 % thankyou: Thanks everyone!
 % thankyou_details: And especially these people:
@@ -30,33 +30,38 @@ title: You Keep Using That Word
 <!-- things testing encompasses: happy path (the code does the right thing to well-formed input in the absence of exceptions) -->
 
 <!--TODO image -->
-<img src="figures/happy_path_img.png" />
+<img src="figures/happy_path_large.jpg" />
 
-<footer class="source">source of image </footer>
+<footer class="source">Flickr user foilman, unaltered, CC-BY-SA 2.0</footer>
 
 ---
 <!-- the program handles bad input as specified (hopefully gracefully) -->
 <!--TODO image -->
-<img src="figures/garbage_in.png" />
+<img src="figures/sign_error_large.jpg" />
 
-<footer class="source">source of image </footer>
+<footer class="source">Flickr user orijinal, unaltered, CC-BY 2.0</footer>
 
 ---
 <!-- the program handles systems failures as gracefully as possible -->
 <!-- TODO image -->
-<img src="figures/server_on_fire.png" />
+<img src="figures/outage_large.jpg" />
 
-<footer class="source">source of image </footer>
+<footer class="source">Flickr user grantwickes, unaltered, CC-BY 2.0</footer>
 ---
 most people focus on 
-<img src="figures/happy_path_img.png" />
+<img src="figures/happy_path_small.jpg" />
 
 but the worst bugs are usually
-<img src="figures/garbage_in.png" /> and <img src="figures/server_on_fire.png" />
+<img src="figures/sign_error_small.jpg" /> and <img src="figures/outage_small.jpg" />
+---
+
+<!-- about 5 mins from start of talk to this point -->
+
 ---
 title: why test?
 
 <!-- if you're not doing it, your users (or your QA people, or your support people, or people who build things on top of your product) are doing it for you '-->
+<!-- TODO graph of software bugs; nice visual on how there's no bug-free software -->
 if not you, who?
 
 ---
@@ -81,6 +86,8 @@ you can't catch every bug with testing. <!-- ' -->
 
 that makes it *even more important* to catch the bugs you can catch.
 
+<!-- why test section was ~3 minutes -->
+
 ---
 title: How to Test
 
@@ -99,6 +106,7 @@ title: Unit tests
 
 <!-- it can be hard to see the point of these in systems that are put together like we're taught they should be -- small functions limited in scope doing one job -- because those functions are human-sized and we imagine we know their behavior.  It's true that we know their behavior when we're writing the function, and for a little while after we're done, but as anyone who's had to go back and read their code years later  can tell you, it doesn't stay obvious. -->
 
+
 <!-- refactoring and legacy code shoutout. -->
 
 <!-- TODO: redo this in javascript -->
@@ -110,11 +118,20 @@ function testMyCoolFunction() {
 	assert myCoolFunction(goodData) == expectedException;
 }
 </pre>
+---
+title: Test-Driven Development
+
+Test-Driven Development (TDD) - an excellent way to make sure that
+
+* you actually write tests for your code
+* your code actually passed the tests, at least at one point
 
 ---
 title: Unit tests
 <!-- in more complicated cases, you have to do a lot of bookkeeping; moreover, statechecking can get nontrivial -->
 <!-- you can see this when unit tests are the only testing framework; in a lot of cases, other kinds of testing frameworks are better for nontrivial side-effecting systems -->
+
+<!-- TODO: look up some of those -->
 
 <pre class="prettyprint" data-lang="c">
 void testMySideEffectingFunction() {
@@ -141,7 +158,7 @@ function testMyCoolFunction() {
 	assert myCoolFunction(justPlainWeirdData) == expectedErrorValue;
 	assert myCoolFunction(maliciouslyIncorrectData) == expectedErrorValue;
 	assert myCoolFunction(incompleteData) == expectedErrorValue;
-	assert myCoolFunction(dataWithABunchOfZalgoInIt) == expectedErrorValue;
+	assert myCoolFunction((╯°□°）╯︵ ┻━┻) == expectedErrorValue;
 	...
 }
 </pre>
@@ -151,29 +168,83 @@ title: Generative Testing
 <!-- what if we could make assertions about our *code* instead? -->
 * our functions have *properties* (e.g., "always returns a JSON object or throws a BadDataException")
 * we use *generators* to generate a bunch of random data with which to test them 
-
+<!-- about 8 minutes from methodology to here -->
 ---
-title: Python example: genty
+title: JavaScript example using Gentest
+<pre class="prettyprint" data-lang="javascript">
 
-<pre class="prettyprint" data-lang="python">
-# Here's the class under test
-class MyClass(object):
-    def add_one(self, x):
-        return x + 1
+forAll([gentest.types.int,         // type of base
+        gentest.types.int],        // type of exponent
 
-# Here's the test code
-@genty
-class MyClassTests(TestCase):
-    @genty_dataset(
-        (0, 1),
-        (100000, 100001),
-    )
-    def test_add_one(self, value, expected_result):
-        actual_result = MyClass().add_one(value)
-        self.assertEqual(expected_result, actual_result)
+       'custom pow implementation equivalent to builtin',   // name of property
+
+       function(base, exponent) {  // function to verify the property
+         return Math.pow(base, exponent) === pow(base, exponent);
+       });
 </pre>
 
-<footer class="source">https://pypi.python.org/pypi/genty/1.1.0</footer>
+<footer class="source">example adapted from http://toxicsli.me/gentest-slides/ (Scott Feeney, gentest framework author)</footer>
+---
+
+<!-- You can then ask for a certain number of randomized tests to be run.  -->
+
+If any randomly generated data falsified the proposition, the test framework will
+* attempt to figure out the smallest set of data that generates a failing test
+* report the test failure, along with the specific data set that caused it
+
+<!-- note the advantage of getting tests for cases you didn't think of -->
+
+---
+title: integration tests
+
+<img src="figures/misaligned_lock.jpg" />
+
+<footer class="source">Flickr user wetsun, unaltered, CC-BY-SA 2.0</footer>
+
+<!-- making sure your individual units fit together.  Interfaces between modules and systems are where bugs spawn -->
+<!-- usually require some infrastructure and more time to run than unit tests -->
+<!-- also usually more complicated to write, especially when targeting specific things; important to prioritize and make tests for what's essential first (it builds! it runs!) -->
+
+---
+title: Continuous Integration
+
+<!-- integration tests work best when they're run very frequently.  common schedules are daily, bidaily (before and after workday), or hourly. -->
+<!-- continuous integration, which is kicked off as a result of a code commit, is gaining ground as tooling supports it -->
+
+* run integration tests whenever someone commits a code change
+
+---
+
+
+---
+title: Tracking and Delivery
+
+<!-- delivering results from integration tests is a big deal; they're often too cumbersome for a developer to run locally (or require coordination if multiple components are being developed in parallel).  frameworks that get this right are key. -->
+
+<!-- Jenkins, Travis; who else? -->
+---
+title: Travis CI
+
+<!-- TODO need a LOT more content here -->
+---
+title: performance tests
+
+<img src="figures/loading_cursor.jpg" />
+
+<!-- it's important to think about because the right answer, too late to help me, is as bad as no answer -->
+<!-- consider the whole application - your webapp's JS can be fast, but that doesn't help if it's rendering the results of an extremely slow database query -->
+<!-- implementing performance tests is highly dependent on your stack and your application; many people end up having to write their own framework -->
+<!-- sometimes integration testing frameworks can help you here; many will give stats on time to build & time to run tests, which may or may not map to real-world performance for you -->
+<!-- shoutout to statsd/graphite for performance monitoring -->
+---
+title: Analyzing Integration Test Data
+
+<!-- graphite/jenkins seems to be a common pair -->
+
+<!-- logstash for log stashin' gets some love too ; with aggregated logs across multiple builds you can ask questions like "how many tests failed on a null pointer exception in this class" to make a case for refactoring, for example -->
+
+<!-- quick demo if possible - 
+https://logstash.openstack.org , search for build_status:"FAILURE", show breakdown of build_queue, re-search for build_queue="gate", drill down into errors -->
 
 ---
 title: Slide with a figure
