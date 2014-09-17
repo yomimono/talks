@@ -5,6 +5,10 @@
 % thankyou_details: And especially these people:
 % contact: <span>CodeChix Madison</span> <a href="http://www.codechix/">website</a>
 
+---
+title: Testing Beyond jUnit
+build_lists: false
+
 <!-- preliminaries:
 
 * can everyone hear me?
@@ -14,11 +18,6 @@
 * I have a list of resources at a URL that I'll share at the end of the presentation, including links to specific frameworks and testing packages for various stacks
 * please save substantive questions/comments for the end; there will be time to discuss them
 -->
-
----
-title: Testing Beyond jUnit
-build_lists: false
-
 What we'll talk about
 
 - what I mean by 'testing'
@@ -47,6 +46,7 @@ class: img-top-center
 
 ---
 class: img-top-center
+
 <!-- the program handles bad input as specified (hopefully gracefully) -->
 <!-- small number of correct inputs, huge array of bad inputs -->
 <img src="figures/sign_error_large.jpg" />
@@ -67,16 +67,12 @@ most people focus on
 
 but the worst bugs are usually
 <img src="figures/sign_error_small.jpg" /> and <img src="figures/outage_small.jpg" />
----
-
-<!-- about 5 mins from start of talk to this point -->
 
 ---
 title: why test?
 
 <!-- if you're not doing it, your users (or your QA people, or your support people, or people who build things on top of your product) are doing it for you '-->
-<!-- TODO graph of software bugs; nice visual on how there's no bug-free software -->
-if not you, who?
+* if not you, who?
 
 ---
 title: User-Generated Bug Reports
@@ -97,6 +93,7 @@ title: Patience is a Finite Resource
 * "better report this bug!"
 * "surely it's meant to work this way; we must be doing it wrong" <!-- which is great until you fix it -->
 * "I'll just live with it" <!-- e.g. when I run report X I get the wrong value in column Y; I'll just ignore column Y -->
+* "we'll fix it ourselves" <!-- not always, but possible for some platforms; this REALLY burns goodwill -->
 * "this thing sucks; let's get/build something else"
 
 ---
@@ -116,8 +113,8 @@ title: How to Test
 * integration tests
 * performance tests
 * regression tests
-* a shoutout to manual testing
 * user experience tests
+* a shoutout to manual testing
 
 ---
 title: Unit tests
@@ -143,7 +140,6 @@ Test-Driven Development (TDD) - an excellent way to make sure that
 
 * you actually write tests for your code
 * your code actually passed the tests, at least at one point
-
 
 ---
 title: Bad Data 
@@ -291,7 +287,7 @@ title: A/B testing
 ---
 title: Manual Tests
 
-* your QA team are heroes!
+* your QA team are your <strike>crime</strike>bugfighting partners!
 * bugs that your QA team finds *repeatedly* are prime candidates for test automation
 * automate the boring parts of testing so your QA team can get user-quality bugs
 
@@ -312,6 +308,8 @@ title: Tracking and Delivery
 ---
 title: Slicing, dicing, and recombinating
 
+* Logstash demo
+
 <!-- graphite/jenkins seems to be a common pair -->
 
 <!-- logstash for log stashin' gets some love too ; with aggregated logs across multiple builds you can ask questions like "how many tests failed on a null pointer exception in this class" to make a case for refactoring, for example -->
@@ -324,8 +322,11 @@ https://logstash.openstack.org , search for build_status:"FAILURE", show breakdo
 Questions?
 
 ---
-More information:
-http://www.github.com/yomimono/talks/testing_codechix/resources.md OR 
+title: More Information
+
+Resources: https://bit.ly/1ASqBPb OR http://www.github.com/yomimono/talks/blob/master/testing_codechix/resources.md
+
+Slides: https://github.com/yomimono/talks/blob/master/testing_codechix/slides/slides.md
 
 Contact me: @mindypreston on Twitter or mindy@somerandomidiot.com
 
