@@ -197,6 +197,7 @@ forAll(
 <!-- You can then ask for a certain number of randomized tests to be run.  -->
 
 If any randomly generated data falsified the proposition, the test framework will
+
 * attempt to figure out the smallest set of data that generates a failing test
 * report the test failure, along with the specific data set that caused it
 
@@ -204,7 +205,7 @@ If any randomly generated data falsified the proposition, the test framework wil
 <!-- turning failed generative tests into unit tests -->
 
 ---
-title: Unit tests
+title: State and Side Effects
 <!-- having lots of bad cases isn't the only way your tests can get complicated -->
 <!-- in more complicated cases, you have to do a lot of bookkeeping; moreover, statechecking can get nontrivial -->
 <!-- you can see this when unit tests are the only testing framework; in a lot of cases, other kinds of testing frameworks are better for nontrivial side-effecting systems -->
@@ -240,12 +241,15 @@ title: Continuous Integration
 ---
 title: Travis CI
 
+* runs continuous integration tests on public GitHub repositories for free
+* instructions in .travis.yml
+
 <!-- nice example: capomastro builds. https://travis-ci.org/capomastro/capomastro -->
 
 ---
 title: What About Systems Failures?
 
-* Netflix Simian Army
+* Netflix Simian Army: "A resiliency tool that helps applications tolerate random instance failures."
 
 ---
 title: performance tests
@@ -257,6 +261,9 @@ class: img-top-center
 <!-- consider the whole application - your webapp's JS can be fast, but that doesn't help if it's rendering the results of an extremely slow database query -->
 <!-- implementing performance tests is highly dependent on your stack and your application; many people end up having to write their own framework -->
 <!-- sometimes integration testing frameworks can help you here; many will give stats on time to build & time to run tests, which may or may not map to real-world performance for you -->
+
+* benchmarking - "how long does this take"
+* profiling - "what's taking so long?"
 
 ---
 title: Regression Tests
