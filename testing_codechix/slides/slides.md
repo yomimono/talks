@@ -10,7 +10,10 @@
 * can everyone hear me?
 * if I'm talking too fast/slow, loud/soft, please raise your hand and let me know
 * same if you need me to repeat something or if you want to request clarification
+* language/platform agnostic
+* I have a list of resources at a URL that I'll share at the end of the presentation, including links to specific frameworks and testing packages for various stacks
 * please save substantive questions/comments for the end; there will be time to discuss them
+-->
 
 ---
 title: Testing Beyond jUnit
@@ -29,11 +32,13 @@ title: You Keep Using That Word
 
 <!-- explain what I mean when I say "testing" -->
 
-- figure out whether your software does what it should
+- figure out whether your software does what it should (at arbitrary granularity)
 - "what it should" is often the hard part of testing
 - focus on automated testing but manual testing has its place
+- more philosophically: testing is a way to cope with an imperfect world
 
 ---
+class: img-top-center
 <!-- things testing encompasses: happy path (the code does the right thing to well-formed input in the absence of exceptions) -->
 
 <img src="figures/happy_path_large.jpg" />
@@ -41,13 +46,18 @@ title: You Keep Using That Word
 <footer class="source">Flickr user foilman, unaltered, CC-BY-SA 2.0</footer>
 
 ---
+class: img-top-center
 <!-- the program handles bad input as specified (hopefully gracefully) -->
+<!-- small number of correct inputs, huge array of bad inputs -->
 <img src="figures/sign_error_large.jpg" />
 
 <footer class="source">Flickr user orijinal, unaltered, CC-BY 2.0</footer>
 
 ---
+class: img-top-center
+
 <!-- the program handles systems failures as gracefully as possible -->
+<!-- e.g., internet not available -->
 <img src="figures/outage_large.jpg" />
 
 <footer class="source">Flickr user grantwickes, unaltered, CC-BY 2.0</footer>
@@ -72,23 +82,28 @@ if not you, who?
 title: User-Generated Bug Reports
 <!-- users make terrible bug reports. -->
 
-<!--TODO: get a really horrible email screenshot of the "it's broken" sort -->
+<pre class="prettyprint" data-lang="plaintext">
+To: bug-reports@strexcorp.com
+Subject: submit doesn't work
+
+When I click "submit" on the form my screen goes dark and I get an error message??????
+</pre>
+
 ---
 title: Patience is a Finite Resource
 
 <!-- user patience is a finite resource.  if your product is generally reliable you'll start up top, but every user-visible bug you ship moves you closer to the bottom of this list. ' -->
 
-* "surely it's meant to work this way; we must be doing it wrong"
-* "I'll just live with it"
+* "better report this bug!"
+* "surely it's meant to work this way; we must be doing it wrong" <!-- which is great until you fix it -->
+* "I'll just live with it" <!-- e.g. when I run report X I get the wrong value in column Y; I'll just ignore column Y -->
 * "this thing sucks; let's get/build something else"
 
 ---
 
-you can't catch every bug with testing. <!-- ' -->
-
----
-
-that makes it *even more important* to catch the bugs you can catch.
+* you can't catch every bug with testing. <!-- ' -->
+* that makes it *even more important* to catch the bugs you can catch.
+* you don't want to burn your user (QA, support, developer, etc) patience on things you could've caught yourself
 
 <!-- why test section was ~3 minutes -->
 
@@ -108,12 +123,11 @@ title: How to Test
 title: Unit tests
 <!-- generally, take the form of some kind of assertion about your data - usually the return value from a function -->
 
-<!-- it can be hard to see the point of these in systems that are put together like we're taught they should be -- small functions limited in scope doing one job -- because those functions are human-sized and we imagine we know their behavior.  It's true that we know their behavior when we're writing the function, and for a little while after we're done, but as anyone who's had to go back and read their code years later  can tell you, it doesn't stay obvious. -->
+<!-- it can be hard to see the point of these small tests when we're writing them.  When we've really got our heads in the code that we're testing, it seems obvious that the code either works or it doesn't; or maybe we know how to test it manually, so it seems silly to automate this testing.  -->
+<!-- It's true that we usually know a function's behavior when we're writing the function, and for a little while after we're done, but it doesn't stay obvious.  And if it's someone else's code, *even if it's well-written*, it's usually not at all obvious. -->
 
+<!-- for example, we need to refactor myCoolFunction -->
 
-<!-- refactoring and legacy code shoutout. -->
-
-<!-- TODO: redo this in javascript -->
 <pre class="prettyprint" data-lang="java">
 function testMyCoolFunction() {
 	assert myCoolFunction(goodData) == expectedValue;
@@ -130,21 +144,6 @@ Test-Driven Development (TDD) - an excellent way to make sure that
 * you actually write tests for your code
 * your code actually passed the tests, at least at one point
 
----
-title: Unit tests
-<!-- in more complicated cases, you have to do a lot of bookkeeping; moreover, statechecking can get nontrivial -->
-<!-- you can see this when unit tests are the only testing framework; in a lot of cases, other kinds of testing frameworks are better for nontrivial side-effecting systems -->
-
-<!-- TODO: look up some of those -->
-
-<pre class="prettyprint" data-lang="c">
-void testMySideEffectingFunction() {
-	state = establishInitialState();
-	ASSERT_EQUAL(mySideEffectingFunction(state, goodData), expectedValue);
-	ASSERT_EQUAL(state, expectedModifiedState);
-	destroyState(state);
-}
-</pre>
 
 ---
 title: Bad Data 
@@ -154,6 +153,8 @@ Happy families are all alike; every unhappy family is unhappy in its own way.
 -- Leo Tolstoy, <i>Anna Karenina</i>
 
 <!-- so too with good data and bad data.  There's probably >1 kind of data that your function shouldn't try to operate on. -->
+
+<!-- example: a string-to-object parser that expects json -->
 
 <pre class="prettyprint" data-lang="java">
 function testMyCoolFunction() {
@@ -172,11 +173,10 @@ title: Generative Testing
 <!-- what if we could make assertions about our *code* instead? -->
 * our functions have *properties* (e.g., "always returns a JSON object or throws a BadDataException")
 * we use *generators* to generate a bunch of random data with which to test them 
-<!-- about 8 minutes from methodology to here -->
+<!-- about 15 minutes -->
 ---
 title: JavaScript example using Gentest
 <pre class="prettyprint" data-lang="javascript">
-
 forAll([gentest.types.int,         // type of base
         gentest.types.int],        // type of exponent
 
@@ -197,6 +197,22 @@ If any randomly generated data falsified the proposition, the test framework wil
 * report the test failure, along with the specific data set that caused it
 
 <!-- note the advantage of getting tests for cases you didn't think of -->
+<!-- turning failed generative tests into unit tests -->
+
+---
+title: Unit tests
+<!-- having lots of bad cases isn't the only way your tests can get complicated -->
+<!-- in more complicated cases, you have to do a lot of bookkeeping; moreover, statechecking can get nontrivial -->
+<!-- you can see this when unit tests are the only testing framework; in a lot of cases, other kinds of testing frameworks are better for nontrivial side-effecting systems -->
+
+<pre class="prettyprint" data-lang="c">
+void testMySideEffectingFunction() {
+	state = establishInitialState();
+	ASSERT_EQUAL(mySideEffectingFunction(state, goodData), expectedValue);
+	ASSERT_EQUAL(state, expectedModifiedState);
+	destroyState(state);
+}
+</pre>
 
 ---
 title: integration tests
@@ -214,24 +230,22 @@ title: Continuous Integration
 
 <!-- integration tests work best when they're run very frequently.  common schedules are daily, bidaily (before and after workday), or hourly. -->
 <!-- continuous integration, which is kicked off as a result of a code commit, is gaining ground as tooling supports it -->
+<!-- there are loads of frameworks for building larger tests in many languages, but many people write their own -->
 
 * run integration tests whenever someone commits a code change
-
----
-
-
----
-title: Tracking and Delivery
-
-<!-- delivering results from integration tests is a big deal; they're often too cumbersome for a developer to run locally (or require coordination if multiple components are being developed in parallel).  frameworks that get this right are key. -->
-
-<!-- Jenkins, Travis; who else? -->
 ---
 title: Travis CI
 
-<!-- TODO need a LOT more content here -->
+<!-- nice example: capomastro builds. https://travis-ci.org/capomastro/capomastro -->
+
+---
+title: What About Systems Failures?
+
+* Netflix Simian Army
+
 ---
 title: performance tests
+class: img-top-center
 
 <img src="figures/loading_cursor.jpg" />
 
@@ -239,9 +253,64 @@ title: performance tests
 <!-- consider the whole application - your webapp's JS can be fast, but that doesn't help if it's rendering the results of an extremely slow database query -->
 <!-- implementing performance tests is highly dependent on your stack and your application; many people end up having to write their own framework -->
 <!-- sometimes integration testing frameworks can help you here; many will give stats on time to build & time to run tests, which may or may not map to real-world performance for you -->
-<!-- shoutout to statsd/graphite for performance monitoring -->
+
 ---
-title: Analyzing Integration Test Data
+title: Regression Tests
+
+* hm, that used to work...
+<!-- making sure old bugs don't creep back into your code -->
+<!-- can be from problems with code hygiene (e.g. old code being merged back in) or brittle patterns (everyone who touches this function forgets that something else it calls can return NULL) -->
+<!-- generally, a separate set of tests that gets run on fairly far-along release candidates -->
+<!-- if it's possible, it's good to run these as part of your continuous integration -->
+
+---
+title: User Experience Tests
+
+<img src="figures/bad_ux.jpg" />
+
+<footer class="source">Flickr user juhansonin, unaltered, CC-BY 2.0</footer>
+<!-- bad UX is a bug -->
+<!-- a lot of people don't do UX testing because they assume it's hard or expensive -->
+<!-- this is another thing where you can improve a lot by just putting in a little bit of effort -->
+<!-- pay someone a token amount to use your app while you film them -->
+
+---
+title: UX testing with paper mockups
+
+* make paper printouts of the screens a userwould advance through
+* have a human switch the paper printouts in response to what the user tries
+
+<!-- you can figure out how a user thinks about your app -->
+<!-- you can also figure out pretty quickly what you didn't think about -- 'I don't have a paper for that!' is a bug -->
+
+---
+title: A/B testing
+
+* test a hypothesis about your site (e.g. removing required signup will result in more finished checkouts) by giving some users an experimental version and some users your existing version
+
+---
+title: Manual Tests
+
+* your QA team are heroes!
+* bugs that your QA team finds *repeatedly* are prime candidates for test automation
+* automate the boring parts of testing so your QA team can get user-quality bugs
+
+<!-- that's it for methodologies; now we're going to talk about dealing with test data -->
+---
+title: Dealing with Test Data
+
+<!-- doing a lot of testing isn't helpful unless you're using the results of your tests to make better software.  if your test stack is unmanageable, people will stop paying attention to it and your quality will suffer. -->
+
+---
+title: Tracking and Delivery
+
+<!-- delivering results from tests is a big deal; they're often too cumbersome for a developer to run locally (or require coordination if multiple components are being developed in parallel).  frameworks that get this right are key. -->
+
+* email is hard to search and correlate
+* too many emails -> email isn't read
+
+---
+title: Slicing, dicing, and recombinating
 
 <!-- graphite/jenkins seems to be a common pair -->
 
@@ -251,43 +320,19 @@ title: Analyzing Integration Test Data
 https://logstash.openstack.org , search for build_status:"FAILURE", show breakdown of build_queue, re-search for build_queue="gate", drill down into errors -->
 
 ---
-title: Slide with a figure
-subtitle: Subtitles are cool too
-class: img-top-center
 
-<img height=150 src=figures/200px-6n-graf.svg.png />
-
-- Some point to make about about this figure from wikipedia
-- This slide has a class that was defined in theme/css/custom.css
-
-<footer class="source"> Always cite your sources! </footer>
+Questions?
 
 ---
-title: Segue slide
-subtitle: I can haz subtitlz?
-class: segue dark nobackground
+More information:
+http://www.github.com/yomimono/talks/testing_codechix/resources.md OR 
 
----
-title: Maybe some code?
+Contact me: @mindypreston on Twitter or mindy@somerandomidiot.com
 
-press 'h' to highlight an important section (that is highlighted
-with &lt;b&gt;...&lt;/b&gt; tags)
-
-<pre class="prettyprint" data-lang="javascript">
-function isSmall() {
-  return window.matchMedia("(min-device-width: ???)").matches;
-}
-
-<b>function hasTouch() {
-  return Modernizr.touch;
-}</b>
-
-function detectFormFactor() {
-  var device = DESKTOP;
-  if (hasTouch()) {
-    device = isSmall() ? PHONE : TABLET;
-  }
-  return device;
-}
-</pre>
-
+Image links:
+* misaligned lock: https://flic.kr/p/5JXY8
+* happy path: https://flic.kr/p/9xsRGz
+* sign error: https://flic.kr/p/fp1VYU
+* outage: https://flic.kr/p/c9tWfo
+* loading screen: https://flic.kr/p/3GDk3
+* bad UX: https://flic.kr/p/6SUtcs
