@@ -173,14 +173,22 @@ title: Generative Testing
 ---
 title: JavaScript example using Gentest
 <pre class="prettyprint" data-lang="javascript">
-forAll([gentest.types.int,         // type of base
-        gentest.types.int],        // type of exponent
 
-       'custom pow implementation equivalent to builtin',   // name of property
+forAll(
+
+	[
+	gentest.types.int,         // type of base
+        gentest.types.int	   // type of exponent
+	],        
+
+       'custom pow implementation equivalent to builtin', // name of property
 
        function(base, exponent) {  // function to verify the property
+
          return Math.pow(base, exponent) === pow(base, exponent);
-       });
+
+       }
+);
 </pre>
 
 <footer class="source">example adapted from http://toxicsli.me/gentest-slides/ (Scott Feeney, gentest framework author)</footer>
@@ -331,6 +339,7 @@ Slides: https://github.com/yomimono/talks/blob/master/testing_codechix/slides/sl
 Contact me: @mindypreston on Twitter or mindy@somerandomidiot.com
 
 Image links:
+
 * misaligned lock: https://flic.kr/p/5JXY8
 * happy path: https://flic.kr/p/9xsRGz
 * sign error: https://flic.kr/p/fp1VYU
