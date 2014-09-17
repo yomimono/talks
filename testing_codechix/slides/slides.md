@@ -36,21 +36,18 @@ title: You Keep Using That Word
 ---
 <!-- things testing encompasses: happy path (the code does the right thing to well-formed input in the absence of exceptions) -->
 
-<!--TODO image -->
 <img src="figures/happy_path_large.jpg" />
 
 <footer class="source">Flickr user foilman, unaltered, CC-BY-SA 2.0</footer>
 
 ---
 <!-- the program handles bad input as specified (hopefully gracefully) -->
-<!--TODO image -->
 <img src="figures/sign_error_large.jpg" />
 
 <footer class="source">Flickr user orijinal, unaltered, CC-BY 2.0</footer>
 
 ---
 <!-- the program handles systems failures as gracefully as possible -->
-<!-- TODO image -->
 <img src="figures/outage_large.jpg" />
 
 <footer class="source">Flickr user grantwickes, unaltered, CC-BY 2.0</footer>
