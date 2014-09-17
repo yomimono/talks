@@ -1,0 +1,646 @@
+<!--
+slidedeck: A modification of the Google IO 2012 HTML5 slide template
+URL: https://github.com/rmcgibbo/slidedeck
+
+Based on https://github.com/francescolaffi/elastic-google-io-slides, and
+ultimately:
+
+Google IO 2012 HTML5 Slide Template
+Authors: Eric Bidelman <ebidel@gmail.com>
+         Luke Mahe <lukem@google.com>
+URL: https://code.google.com/p/io-2012-slides
+-->
+<!DOCTYPE html>
+<html>
+<head>
+  <title> Testing Beyond jUnit</title>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">-->
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+  <!--This one seems to work all the time, but really small on ipad-->
+  <!--<meta name="viewport" content="initial-scale=0.4">-->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  
+  <link rel="stylesheet" media="all" href="theme/css/default.css">
+  <link rel="stylesheet" media="all" href="theme/css/custom.css">
+  <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="theme/css/phone.css">
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->
+  <script data-main="js/slides" src="js/require-1.0.8.min.js"></script>
+
+  <!-- MathJax support  -->
+  <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    showProcessingMessages: false,
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+  </script>
+  <script type="text/javascript" src="js/MathJax.js"></script>
+
+</head>
+
+<body style="opacity: 0">
+
+<slides class="layout-widescreen">
+<slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+
+    <h1> Testing Beyond jUnit</h1>
+    <h2> (a Madison-Milwaukee CodeChix Talk)</h2>
+    <p> Mindy Preston</p>
+  </hgroup>
+</slide>
+
+
+<slide  >
+  
+    <hgroup>
+      <h2>Testing Beyond jUnit</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- preliminaries:
+
+* can everyone hear me?
+* if I'm talking too fast/slow, loud/soft, please raise your hand and let me know
+* same if you need me to repeat something or if you want to request clarification
+* language/platform agnostic
+* I have a list of resources at a URL that I'll share at the end of the presentation, including links to specific frameworks and testing packages for various stacks
+* please save substantive questions/comments for the end; there will be time to discuss them
+-->
+
+<p>What we'll talk about</p>
+<ul>
+<li>what I mean by 'testing'</li>
+<li>why test?</li>
+<li>testing methodologies</li>
+<li>what to do with testing data</li>
+<li>your questions!</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>You Keep Using That Word</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- explain what I mean when I say "testing" -->
+
+<ul>
+<li>figure out whether your software does what it should (at arbitrary granularity)</li>
+<li>"what it should" is often the hard part of testing</li>
+<li>focus on automated testing but manual testing has its place</li>
+<li>more philosophically: testing is a way to cope with an imperfect world</li>
+</ul></article>
+ 
+</slide>
+
+<slide class="img-top-center" >
+  
+    <hgroup>
+      <h2></h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p><img src="figures/happy_path_large.jpg" /></p>
+<footer class="source">Flickr user foilman, unaltered, CC-BY-SA 2.0</footer></article>
+ 
+</slide>
+
+<slide class="img-top-center" >
+  
+    <hgroup>
+      <h2></h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- the program handles bad input as specified (hopefully gracefully) -->
+
+<!-- small number of correct inputs, huge array of bad inputs -->
+
+<p><img src="figures/sign_error_large.jpg" /></p>
+<footer class="source">Flickr user orijinal, unaltered, CC-BY 2.0</footer></article>
+ 
+</slide>
+
+<slide class="img-top-center" >
+  
+    <hgroup>
+      <h2></h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- the program handles systems failures as gracefully as possible -->
+
+<!-- e.g., internet not available -->
+
+<p><img src="figures/outage_large.jpg" /></p>
+<footer class="source">Flickr user grantwickes, unaltered, CC-BY 2.0</footer></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2></h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>most people focus on 
+<img src="figures/happy_path_small.jpg" /></p>
+<p>but the worst bugs are usually
+<img src="figures/sign_error_small.jpg" /> and <img src="figures/outage_small.jpg" /></p></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>why test?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- if you're not doing it, your users (or your QA people, or your support people, or people who build things on top of your product) are doing it for you '-->
+
+<ul>
+<li>if not you, who?</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>User-Generated Bug Reports</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><pre class="prettyprint" data-lang="plaintext">
+To: bug-reports@strexcorp.com
+Subject: submit doesn't work
+
+When I click "submit" on the form my screen goes dark and I get an error message??????
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Patience is a Finite Resource</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- user patience is a finite resource.  if your product is generally reliable you'll start up top, but every user-visible bug you ship moves you closer to the bottom of this list. ' -->
+
+<ul>
+<li>"better report this bug!"</li>
+<li>"surely it's meant to work this way; we must be doing it wrong" <!-- which is great until you fix it --></li>
+<li>"I'll just live with it" <!-- e.g. when I run report X I get the wrong value in column Y; I'll just ignore column Y --></li>
+<li>"we'll fix it ourselves" <!-- not always, but possible for some platforms; this REALLY burns goodwill --></li>
+<li>"this thing sucks; let's get/build something else"</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2></h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>you can't catch every bug with testing. <!-- ' --></li>
+<li>that makes it <em>even more important</em> to catch the bugs you can catch.</li>
+<li>you don't want to burn your user (QA, support, developer, etc) patience on things you could've caught yourself</li>
+</ul>
+<!-- why test section was ~3 minutes --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>How to Test</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>unit tests <ul>
+<li>test-driven development</li>
+<li>generative tests</li>
+</ul>
+</li>
+<li>integration tests</li>
+<li>performance tests</li>
+<li>regression tests</li>
+<li>user experience tests</li>
+<li>a shoutout to manual testing</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Unit tests</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- it can be hard to see the point of these small tests when we're writing them.  When we've really got our heads in the code that we're testing, it seems obvious that the code either works or it doesn't; or maybe we know how to test it manually, so it seems silly to automate this testing.  -->
+
+<!-- It's true that we usually know a function's behavior when we're writing the function, and for a little while after we're done, but it doesn't stay obvious.  And if it's someone else's code, *even if it's well-written*, it's usually not at all obvious. -->
+
+<!-- for example, we need to refactor myCoolFunction -->
+
+<pre class="prettyprint" data-lang="java">
+function testMyCoolFunction() {
+    assert myCoolFunction(goodData) == expectedValue;
+    assert myCoolFunction(badData) == expectedErrorValue;
+    breakSomethingImportant();
+    assert myCoolFunction(goodData) == expectedException;
+}
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Test-Driven Development</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>Test-Driven Development (TDD) - an excellent way to make sure that</p>
+<ul>
+<li>you actually write tests for your code</li>
+<li>your code actually passed the tests, at least at one point</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Bad Data</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>Happy families are all alike; every unhappy family is unhappy in its own way.</p>
+<p>-- Leo Tolstoy, <i>Anna Karenina</i></p>
+<!-- so too with good data and bad data.  There's probably >1 kind of data that your function shouldn't try to operate on. -->
+
+<!-- example: a string-to-object parser that expects json -->
+
+<pre class="prettyprint" data-lang="java">
+function testMyCoolFunction() {
+    assert myCoolFunction(nullData) == expectedErrorValue;
+    assert myCoolFunction(dataMissingAParticularField) == expectedErrorValue;
+    assert myCoolFunction(justPlainWeirdData) == expectedErrorValue;
+    assert myCoolFunction(maliciouslyIncorrectData) == expectedErrorValue;
+    assert myCoolFunction(incompleteData) == expectedErrorValue;
+    assert myCoolFunction((╯°□°）╯︵ ┻━┻) == expectedErrorValue;
+    ...
+}
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Generative Testing</h2>
+      <h3></h3>
+    </hgroup>
+    <article ></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>JavaScript example using Gentest</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>forAll(</p>
+<pre><code>[
+gentest.types.int,         // type of base
+    gentest.types.int      // type of exponent
+],
+
+   'custom pow implementation equivalent to builtin', // name of property
+
+   function(base, exponent) {  // function to verify the property
+
+     return Math.pow(base, exponent) === pow(base, exponent);
+
+   }
+</code></pre>
+<p>);
+</pre></p>
+<footer class="source">example adapted from http://toxicsli.me/gentest-slides/ (Scott Feeney, gentest framework author)</footer></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2></h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- You can then ask for a certain number of randomized tests to be run.  -->
+
+<p>If any randomly generated data falsified the proposition, the test framework will</p>
+<ul>
+<li>attempt to figure out the smallest set of data that generates a failing test</li>
+<li>report the test failure, along with the specific data set that caused it</li>
+</ul>
+<!-- note the advantage of getting tests for cases you didn't think of -->
+
+<!-- turning failed generative tests into unit tests --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>State and Side Effects</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><pre class="prettyprint" data-lang="c">
+void testMySideEffectingFunction() {
+    state = establishInitialState();
+    ASSERT_EQUAL(mySideEffectingFunction(state, goodData), expectedValue);
+    ASSERT_EQUAL(state, expectedModifiedState);
+    destroyState(state);
+}
+</pre></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>integration tests</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p><img src="figures/misaligned_lock.jpg" /></p>
+<footer class="source">Flickr user wetsun, unaltered, CC-BY-SA 2.0</footer>
+
+<!-- making sure your individual units fit together.  Interfaces between modules and systems are where bugs spawn -->
+
+<!-- usually require some infrastructure and more time to run than unit tests -->
+
+<!-- also usually more complicated to write, especially when targeting specific things; important to prioritize and make tests for what's essential first (it builds! it runs!) --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Continuous Integration</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- integration tests work best when they're run very frequently.  common schedules are daily, bidaily (before and after workday), or hourly. -->
+
+<!-- continuous integration, which is kicked off as a result of a code commit, is gaining ground as tooling supports it -->
+
+<!-- there are loads of frameworks for building larger tests in many languages, but many people write their own -->
+
+<ul>
+<li>run integration tests whenever someone commits a code change</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Travis CI</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>runs continuous integration tests on public GitHub repositories for free</li>
+<li>instructions in .travis.yml</li>
+</ul>
+<!-- nice example: capomastro builds. https://travis-ci.org/capomastro/capomastro --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>What About Systems Failures?</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>Netflix Simian Army: "A resiliency tool that helps applications tolerate random instance failures."</li>
+</ul></article>
+ 
+</slide>
+
+<slide class="img-top-center" >
+  
+    <hgroup>
+      <h2>performance tests</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p><img src="figures/loading_cursor.jpg" /></p>
+<!-- it's important to think about because the right answer, too late to help me, is as bad as no answer -->
+
+<!-- consider the whole application - your webapp's JS can be fast, but that doesn't help if it's rendering the results of an extremely slow database query -->
+
+<!-- implementing performance tests is highly dependent on your stack and your application; many people end up having to write their own framework -->
+
+<!-- sometimes integration testing frameworks can help you here; many will give stats on time to build & time to run tests, which may or may not map to real-world performance for you -->
+
+<ul>
+<li>benchmarking - "how long does this take"</li>
+<li>profiling - "what's taking so long?"</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Regression Tests</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>hm, that used to work...
+<!-- making sure old bugs don't creep back into your code -->
+<!-- can be from problems with code hygiene (e.g. old code being merged back in) or brittle patterns (everyone who touches this function forgets that something else it calls can return NULL) -->
+<!-- generally, a separate set of tests that gets run on fairly far-along release candidates -->
+<!-- if it's possible, it's good to run these as part of your continuous integration --></li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>User Experience Tests</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p><img src="figures/bad_ux.jpg" /></p>
+<footer class="source">Flickr user juhansonin, unaltered, CC-BY 2.0</footer>
+
+<!-- bad UX is a bug -->
+
+<!-- a lot of people don't do UX testing because they assume it's hard or expensive -->
+
+<!-- this is another thing where you can improve a lot by just putting in a little bit of effort -->
+
+<!-- pay someone a token amount to use your app while you film them --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>UX testing with paper mockups</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>make paper printouts of the screens a userwould advance through</li>
+<li>have a human switch the paper printouts in response to what the user tries</li>
+</ul>
+<!-- you can figure out how a user thinks about your app -->
+
+<!-- you can also figure out pretty quickly what you didn't think about -- 'I don't have a paper for that!' is a bug --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>A/B testing</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>test a hypothesis about your site (e.g. removing required signup will result in more finished checkouts) by giving some users an experimental version and some users your existing version</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Manual Tests</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>your QA team are your <strike>crime</strike>bugfighting partners!</li>
+<li>bugs that your QA team finds <em>repeatedly</em> are prime candidates for test automation</li>
+<li>automate the boring parts of testing so your QA team can get user-quality bugs</li>
+</ul>
+<!-- that's it for methodologies; now we're going to talk about dealing with test data --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Dealing with Test Data</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- doing a lot of testing isn't helpful unless you're using the results of your tests to make better software.  if your test stack is unmanageable, people will stop paying attention to it and your quality will suffer. --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Tracking and Delivery</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><!-- delivering results from tests is a big deal; they're often too cumbersome for a developer to run locally (or require coordination if multiple components are being developed in parallel).  frameworks that get this right are key. -->
+
+<ul>
+<li>email is hard to search and correlate</li>
+<li>too many emails -&gt; email isn't read</li>
+</ul></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>Slicing, dicing, and recombinating</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><ul>
+<li>Logstash demo</li>
+</ul>
+<!-- graphite/jenkins seems to be a common pair -->
+
+<!-- logstash for log stashin' gets some love too ; with aggregated logs across multiple builds you can ask questions like "how many tests failed on a null pointer exception in this class" to make a case for refactoring, for example -->
+
+<!-- quick demo if possible - 
+https://logstash.openstack.org , search for build_status:"FAILURE", show breakdown of build_queue, re-search for build_queue="gate", drill down into errors --></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2></h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>Questions?</p></article>
+ 
+</slide>
+
+<slide  >
+  
+    <hgroup>
+      <h2>More Information</h2>
+      <h3></h3>
+    </hgroup>
+    <article ><p>Resources: https://bit.ly/1ASqBPb OR http://www.github.com/yomimono/talks/blob/master/testing_codechix/resources.md</p>
+<p>Slides: https://github.com/yomimono/talks/blob/master/testing_codechix/slides/slides.md</p>
+<p>Contact me: @mindypreston on Twitter or mindy@somerandomidiot.com</p>
+<p>Image links:</p>
+<ul>
+<li>misaligned lock: https://flic.kr/p/5JXY8</li>
+<li>happy path: https://flic.kr/p/9xsRGz</li>
+<li>sign error: https://flic.kr/p/fp1VYU</li>
+<li>outage: https://flic.kr/p/c9tWfo</li>
+<li>loading screen: https://flic.kr/p/3GDk3</li>
+<li>bad UX: https://flic.kr/p/6SUtcs</li>
+</ul></article>
+ 
+</slide>
+
+
+<slide class="thank-you-slide segue nobackground">
+  <!-- <aside class="gdbar right"><img src="images/google_developers_icon_128.png"></aside> -->
+  <article class="flexbox vleft auto-fadein">
+    <h2> Thanks everyone!</h2>
+    <p> And especially these people:</p>
+  </article>
+  <p data-config-contact class="auto-fadein"> <span>CodeChix Madison</span> <a href="http://www.codechix/">website</a></p>
+  </p>
+</slide>
+
+<slide class="backdrop"></slide>
+
+</slides>
+<!--
+<script>
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-XXXXXXXX-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
+</script>
+-->
+
+<!--[if IE]>
+  <script src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
+  <script>CFInstall.check({mode: 'overlay'});</script>
+<![endif]-->
+</body>
+</html>
