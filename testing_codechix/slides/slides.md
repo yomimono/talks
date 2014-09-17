@@ -5,6 +5,13 @@
 % thankyou_details: And especially these people:
 % contact: <span>CodeChix Madison</span> <a href="http://www.codechix/">website</a>
 
+<!-- preliminaries:
+
+* can everyone hear me?
+* if I'm talking too fast/slow, loud/soft, please raise your hand and let me know
+* same if you need me to repeat something or if you want to request clarification
+* please save substantive questions/comments for the end; there will be time to discuss them
+
 ---
 title: Testing Beyond jUnit
 build_lists: false
