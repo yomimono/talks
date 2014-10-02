@@ -38,13 +38,13 @@ Attendees will find out what fuzzing is, why black-box testing is sometimes appr
 
  Doing black-box testing over the network means that a complete record of the test can be taken with a tool like tcpdump, allowing the tester to construct a non-randomized test for later use when a particular input is discovered to produce unexpected results.  It also gains the user a view of what software components used in the target system do in normal operation, instead of under artificial conditions.
 
- ## Approach ##
+## Approach ##
 
  Divide and conquer!  Identify what you'd like to test (for example, a certain API endpoint or a service provided by your home router).  Isolate subcomponents of what you're testing, and think about multiple layers if it's applicable (e.g., testing your custom code, testing HTTP, testing TCP, testing IP).  Some documents, if they're available, can help you in determining how to best focus your tests.
 
  Then, it's test-writing time!  This is where using scapy really shines - it's often possible not to have to write much, because Scapy often already knows how to write messages of the kind you want (e.g. HTTP, UPnP).  Analyzing the results of your tests can be more complicated, depending on how detailed you want to be - if you're just trying to identify crash behavior, this is usually pretty easy.  Scapy can be used for more complicated types of analysis (e.g. "this call should always return 403 Unauthorized and if you ever get anything else back, that's a problem" or "if the conversation didn't contain two instances of the echo string, that's a problem").
 
- ## Acting On Information ##
+## Acting On Information ##
 
  The output of your analysis is often a set of inputs for which the software does something unexpected.  These are great fodder for bug reports and unit or integration tests for the group that maintains the software you're testing.  Often responsible disclosure is a consideration.
 
