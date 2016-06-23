@@ -1,0 +1,405 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<title></title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=792, user-scalable=no">
+	<meta http-equiv="x-ua-compatible" content="ie=edge">
+	<link rel="stylesheet" href="shower/themes/ribbon/styles/screen.css">
+</head>
+<body class="list">
+	<style>
+#Cover p.author {font-size: 200%;}
+</style>
+	<header class="caption">
+	<h1>Unikernels and Containers: How to Even</h1>
+	<p>Mindy Preston</p>
+	</header>
+	<section class="slide cover" id="Cover"><div>
+		<!--
+			To apply styles to the certain slides
+			set slide ID to get needed elements
+			-->
+		<style>
+			#Cover h2 {
+				margin:30px 0 0;
+				color:#FFF;
+				text-align:center;
+				font-size:70px;
+				}
+			#Cover p {
+				margin:10px 0 0;
+				text-align:center;
+				color:#FFF;
+				font-style:italic;
+				font-size:20px;
+				}
+				n#Cover p a {
+					color:#FFF;
+					}
+				a.linked { text-decoration: none; color: #fff; border: none;}
+                span.strike { text-decoration: line-through;}
+                .pic img { max-width:90%; height:90%; max-height: 90%;}
+                .pic a { text-decoration: none; color: #fff;}
+				.shiftimage { position: relative; top: -40px; left: 100px;}
+				.floatimage { float: right;}
+				pre.small { font-size: 60%;}
+				pre.tiny { font-size: 40%;}
+				.shout blockquote { font-size: 200%;}
+				.picgrid div {height: 100%; padding-top: 10px;}
+				.picgrid img {
+    			/*max-width:80px;*/
+    			display:inline-block;
+    			width:30%; height: 30%;
+				}
+				.picgrid:after{visibility:hidden}
+<!--				.last:after{background:url(/pictures/lastwhale.png) no-repeat} -->
+		</style>
+	<h2>Unikernels and Containers: How to Even</h1>
+	<p>Mindy Preston</p>
+	</div></section>
+
+<section class="slide">
+<div>
+<h2>Mindy Preston</h2>
+<ul>
+<li>tweets <a href="https://twitter.com/mindypreston">@mindypreston</a></li>
+<li>A maintainer of the <a href=https://mirage.io>MirageOS library operating system</a></li>
+<li>Member of Technical Staff at Docker<br/>(Docker is hiring! <a href="https://www.docker.com/careers">https://www.docker.com/careers</a>)</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>Let's Talk About Virtualization!</h2>
+<ul>
+<li>Definitions and Background</li>
+<li>Generating and Running Containers<ul>
+<li>Why?</li>
+<li>How?</li> </ul>
+<li>Generating and Running Unikernels<ul>
+<li>Why?</li>
+<li>How?</li> </ul>
+<li>What's New and What's Next?</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>it's a big world out there!</h2>
+<ul>
+<li><a href="https://unikernel.org">unikernel.org</a> for information on other unikernel &amp; library operating system projects</li>
+<li><a href="https://opencontainers.org">the Open Container Initiative</a> for information on common container specifications and more implementations</li>
+</p>
+<br/>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>def virtualization</h2>
+<p>"virtualization"*: providing an environment that looks like a separate computer, but isn't!</p>
+<ul>
+<li>emulators like <a href="http://www.dosbox.com">DOSBox</a> (run old DOS software on your modern computer)</li>
+<li>more general virtualization like <a href="http://www.virtualbox.org">VirtualBox</a> (run a different OS within your OS)</li>
+<li>a machine you rent "in the cloud"</li>
+</ul>
+<p>* - for the purposes of this talk</p>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>def container</h2>
+<ul>
+<li>"containers": artifacts representing a set of software that has its own virtualized storage, process, and network space
+<li>1 operating system : many containers</li>
+<li>conceptually, can be used to bundle one piece of software and all of its dependencies into a reproducible unit</li>
+</ul>
+</div>
+</section>
+
+
+<section class="slide shout">
+<div>
+<h2>Artifact</h2>
+</div>
+</section>
+
+
+<section class="slide">
+<div>
+	<h2>the thing you want to run</h2>
+<ul>
+<li>something which allows the execution of general application code</li>
+<li>something easily described completely (you can enumerate the things it needs)</li>
+<li>something low-overhead (small in terms of binary size, cpu/mem, or some other resource consumption)</li>
+<ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+	<h2>Artifact is Code</h2>
+<pre class="medium"> <code>
+application code (= source)
+(intepreter &amp; dependencies) + external app dependencies
+OS + shared libraries
+computer
+</code> </pre>
+<ul>
+<li>python and ruby code + interpreter on your favorite OS</li>
+<li>JavaScript + browser on your favorite OS</li>
+</ul>
+<!-- raise your hand if you've ever tried to run python 2 code in a python 3 interpreter, or vice versa.  raise your hand if you've ever gone to run a ruby program and discovered you needed about nine thousand gems. -->
+<!-- this paradigm looks really great when you're building stuff for yourself on your own machine, and by itself it stops loking so good when you want to start distributing your application around the world. -->
+</div>
+</section>
+
+<section class="slide">
+<div>
+	<h2>Artifact is Code</h2>
+<pre class="medium"> <code>
+application code (= source)
+(intepreter &amp; dependencies) + external app dependencies
+OS + shared libraries
+computer
+</code> </pre>
+<ul>
+<li>ever tried to run python3 code in a python2 interpreter?</li>
+<li>ever had to figure out what set of gems a random ruby file needs?</li>
+<li>this library needs headers for a C library... how do I get them?</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>Artifact is Code + Build Spec</h2>
+<pre class="medium">
+<code>
+app + base img + deps + config |&gt; container builder |&gt; image
+container runner
+OS
+computer
+</code>
+</pre>
+<ul>
+<li>some platforms provide scripting for automating what goes into the container builder</li>
+<li>if your application can be supported by the base OS, this is great</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>Let's build a container</h2>
+<ul>
+<li>our container: a web server + the files that represent these slides</li>
+<li>we'll use a Dockerfile to specify the container, and docker tools to build and run it</li>
+<li>we'll tell the docker daemon that we want to connect to it on port 80</li>
+<li>and we'll be able to see some slides!</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>what we'll end up with</h2>
+<pre class="large">
+<code>
+web server in a container
+container daemon
+linux
+hypervisor
+laptop
+</code>
+</pre>
+</div>
+</section>
+
+<section class="slide shout">
+<h2>
+demo time!
+</h2>
+</section>
+
+<section class="slide">
+<div>
+<h2>why containers?</h2>
+<ul>
+<li>reproducibility</li>
+<li>maturity of tooling &amp; community (see <a href="http://hub.docker.com">http://hub.docker.com</a>)</li>
+<li>ease of interchange (easy deploys!)</li>
+</ul>
+</div>
+</section>
+
+
+<!-- flip to unikernels -->
+<section class="slide shout">
+<div>
+<h2>unikernels</h2>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>def unikernel</h2>
+<ul>
+<li>"unikernels": artifacts representing a set of software which runs in a single address space, with no distinction between kernel and userspace code.<ul>
+<li>a very small thing you can run as if it's an independent computer</li>
+<li>*can* be run on something that wants to run multiple traditional OSes on one piece of hardware, like a hypervisor</li>
+<li>1 hypervisor : many unikernels</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>def libraryos</h2>
+<ul>
+<li>"library operating system": a build system which can link a group of libraries representing traditional OS functions with an application to produce a unikernel.</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>Artifact is Code + OS</h2>
+<pre class="medium">
+<code>
+app + app deps + OS deps |&gt; unikernel builder |&gt; unikernel
+unikernel runner
+computer
+</code>
+</pre>
+<ul>
+<li>library operating systems: system dependencies on the same conceptual level as application dependencies</li>
+<li>unikernels: the artifact we generate, which doesn't need to run on a traditional OS</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>Let's build a unikenrel</h2>
+<ul>
+<li>our unikernel: an echo server</li>
+<li>we'll specify the application and OS library requirements in a MirageOS configuration file</li>
+<li>we'll generate some code that, when compiled, makes a unikernel</li>
+<li>we'll compile the unikernel</li>
+<li>we'll run the unikernel on the hypervisor!</li>
+</ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>what we'll end up with</h2>
+<pre class="large">
+<code>
+unikernel
+hypervisor
+laptop
+</code>
+</pre>
+</div>
+</section>
+
+<section class="slide shout">
+<div>
+<h2>unikernel demo!</h2>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>build unikernels in containers</h2>
+<p>get started with
+<code>
+docker pull ocaml/opam:ubuntu
+</code>
+</pre>
+or your OS of choice
+</p>
+<p>you can also try
+<code>
+docker pull halvm/base
+</code>
+to give the Haskell unikernel project HaLVM a shot
+</div>
+</section>
+
+<section class="slide">
+<div>
+	<h2>why unikernels?</h2>
+<ul>
+<li>don't need an underlying OS to run, just to build</li>
+<li>stronger isolation -- hypervisor vs operating system</li>
+<li>maybe you want to write your own OS libraries!</li>
+<ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>reject the default reality and substitute your own</h2>
+<ul>
+<li>common failure points for applications are "external" problems, which the OS notices</li>
+<li>you can stress your application easily, by providing libraries that always have edge cases occurring</li>
+</div>
+</section>
+
+<section class="slide">
+<div>
+	<h2>where we're going</h2>
+<ul>
+<li>we'll have done a good job when unikernels Just Work</li>
+<li>it should be just as easy to build, ship, run, and scale a unikernel as a process or a container</li>
+<li>sometimes you'll want a unikernel and sometimes you won't &mdash; it'll be great when you can do the right thing no matter what</li>
+<ul>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>You Can Make It Happen!</h2>
+<ul>
+<li><a href="https://github.com/docker/docker">docker is an open source project!</a></li>
+<li><a href="https://unikernel.org">unikernel.org</a> - find or list your favorite unikernel project!</li>
+<li><a href="https://mirage.io">MirageOS summer hack retreat</a> - join us face-to-face to improve MirageOS!</li>
+</div>
+</section>
+
+<section class="slide">
+<div>
+<h2>special thanks to...</h2>
+<ul>
+<li><a href="https://github.com/talex5/qubes-mirage-skeleton">@talex5 for Qubes-compatible unikernel demo code</a></li>
+<li>OSB, my favorite tech conference &lt;3</li>
+<li>Outreachy and the Recurse Center &lt;3 &lt;3</li>
+<li>the fantastic contributors to Docker, MirageOS, HaLVM, and myriad other unikernel projects</li>
+</ul>
+</div>
+</section>
+
+
+<section class="slide last">
+<div>
+<h2>Questions?</h2>
+<ul>
+<li><a href="https://twitter.com/mindypreston">@mindypreston</a>
+<li>mindy.preston@docker.com
+<li><code>docker run -d -P mindypreston/osbridge2016</code>
+<p>&nbsp;
+	<img src="pictures/vector_h.svg" alt="" width="100%"/>
+</div>
+</section>
+
+
+	<div class="progress"><div></div></div>
+	<script src="shower/shower.min.js"></script>
+</html>
