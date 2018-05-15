@@ -7,29 +7,24 @@ team: https://robur.io
 me: https://somerandomidiot.com
 also me: https://wandering.shop/@yomimono
 
-## Where To?
+## What We Think About When We Think About Programming
 
-* libraries and executables
-* operating systems
-* building better futures with library operating systems
-* positive side effects of radical change
+```
+$ my-package-manager install dependencies
+$ mkdir project && cd project
+$ cat /dev/ideas > code.ext
+$ build code
+$ ./code
+```
 
-## Libraries and Executables
+## Most Projects Aren't Just Our Code
 
-* applications: purpose-built runnable things that do something specific
-  - e.g. bc, doom, atom, word, firefox, ...
-* libraries: components for re-use in multiple software things
-  - e.g. scipy, ncurses, language-specific standard library, ...
-
-## Libraries and Executables
-
-* what applications are made of:
-  executable code +
-  our libraries +
-  dependencies (other people's libraries) +
-  the language our code is written in +
+things to understand:
+  our code +
+  the language of our code +
   build chain +
   relevant environments +
+  dependencies +
   ...
 
 ## Operating Systems
@@ -46,32 +41,22 @@ also me: https://wandering.shop/@yomimono
 +-----------------------------------------+
 ```
 
-## Operating Systems
+## The Operating System as Dependency
 
-* at runtime, provide (or don't) things executables ask for
+* really huge (and probably has more stuff than you need)
+* documentation isn't where your documentation normally is
+* not debuggable in your normal environment
+* accessed via an alien API
 
-## Operating Systems
+## "alien API"
 
-* Is an operating system an application?
-  - it might do any one of the things it knows how to do, depending on the environment
-
-## Operating Systems
-
-* But maybe it's also a library?
-
-```
+from `man 2` in linux:
+```c
 int socket(int domain, int type, int protocol);
 /* many integer constants defined below... */
-/* on success, a file descriptor is returned *.
-/* on error, -1 is returned, and errno is set */
-
-int connect(int sockfd, const struct sockaddr *addr,
-            socklen_t addrlen);
-/* socklen_t is "in reality an int" */
-/* on success, 0 is returned */
+/* on success, a file descriptor is returned */
 /* on error, -1 is returned, and errno is set */
 ```
-
 
 ## Operating Systems
 
