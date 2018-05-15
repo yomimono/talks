@@ -84,7 +84,7 @@ let's replace them with something more convenient!
 ## Library Operating System
 
 ```
-+-------------------------------------------+ |
++-------------------------------------------+ \ 
 |  User-level Application  |  Dependencies  | |
 +-------------------------------------------+ |
         API in Your Language                  | 
@@ -92,13 +92,26 @@ let's replace them with something more convenient!
 | Networking | Storage | Randomness | ....  | |
 +------------+---------+------------+-------+ |
         API in Your Language                  | unikernel
-+---------------------------------------------+ |
-| Language runtime                            | |
-+---------------------------------------------+ |
-| Hypervisor interface layer                  | |
-+---------------------------------------------+ |
-| Hypervisor                                  |
-+---------------------------------------------+
++-------------------------------------------+ |
+| Language runtime                          | |
++-------------------------------------------+ |
+| Hypervisor interface layer                | |
++-------------------------------------------+ / 
+| Hypervisor                                |
++-------------------------------------------+
+```
+
+## 
+
+```
++---------------+-------------+------------+
+| Application   | Application | Application|
+|    and        |-------------|------------|
+| Dependencies  | OS          | OS         |
+| = unikernel   |             |            |
++---------------+-------------+------------+
+| Hypervisor: access to resources          |
++------------------------------------------+
 ```
 
 ## What do the Libraries Look Like?
@@ -146,17 +159,6 @@ end
     Pcb.connect tcp ~dst:daddr ~dst_port:dport >>= function
     | Error e -> log_failure daddr dport e; Lwt.return @@ Error e
     | Ok (fl, _) -> Lwt.return (Ok fl)
-```
-
-## Libraries -> Unikernels
-
-```ocaml
-type output =
-  | OS_process
-  | Minimal_virtual_machine
-
-val build : application -> dependencies list ->
-            implementations list -> output
 ```
 
 ## Quick Demo
