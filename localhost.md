@@ -84,21 +84,21 @@ let's replace them with something more convenient!
 ## Library Operating System
 
 ```
-+---------------------------------------------------------+
-|    User-level Application    |      Dependencies        |
-+---------------------------------------------------------+
-                 API in Your Language
-+------------+---------+-------------+------------+-------+
-| Networking | Storage | Timekeeping | Randomness | ....  |
-+------------+---------+-------------+------------+-------+
-                 API in Your Language
-+---------------------------------------------------------+
-| Language runtime                                        |
-+---------------------------------------------------------+
-| Hypervisor interface layer                              |
-+---------------------------------------------------------+
-| Hypervisor                                              |
-+---------------------------------------------------------+
++-------------------------------------------+ |
+|  User-level Application  |  Dependencies  | |
++-------------------------------------------+ |
+        API in Your Language                  | 
++------------+---------+------------+-------+ |
+| Networking | Storage | Randomness | ....  | |
++------------+---------+------------+-------+ |
+        API in Your Language                  | unikernel
++---------------------------------------------+ |
+| Language runtime                            | |
++---------------------------------------------+ |
+| Hypervisor interface layer                  | |
++---------------------------------------------+ |
+| Hypervisor                                  |
++---------------------------------------------+
 ```
 
 ## What do the Libraries Look Like?
@@ -159,7 +159,7 @@ val build : application -> dependencies list ->
             implementations list -> output
 ```
 
-## Quick Demo - Let's Build a Website
+## Quick Demo
 
 ## Full-Stack Development
 
@@ -245,11 +245,6 @@ We could use a featureful library for storing state that gives us some affordanc
 ## Visualizing Control Flow
 
 + What if the scheduler left a log?
-
-## What About the Hypervisor?
-
-+ we can take just the pieces we need from that, too
-+ solo5 ukvm: take device requirement information and have the hypervisor only surface what's needed
 
 ## On the Desktop (MirageOS + QubesOS = <3)
 
