@@ -3,7 +3,9 @@
 Let's democratize systems programming!
 
 Mindy Preston
-https://robur.io
+team: https://robur.io
+me: https://somerandomidiot.com
+also me: https://wandering.shop/@yomimono
 
 ## Where To?
 
@@ -15,8 +17,8 @@ https://robur.io
 ## Libraries and Executables
 
 * libraries: components for re-use in multiple software things
-  - e.g. scipy, jquery, ncurses, java stl
-* executables: purpose-built runnable things
+  - e.g. scipy, ncurses, java stl, ...
+* executables: purpose-built runnable things that do something specific
   - e.g. bc, doom, atom, word, firefox, ...
 
 ## Libraries and Executables
@@ -27,16 +29,32 @@ https://robur.io
 
 ## Libraries and Executables
 
-* build your executables, using libraries
-* run them on an operating system
-  - e.g. windows, linux, bsd, haiku, hurd, ...
+* libraries + executable code + build system = application
+* but that's not all you need...
+
+## Operating Systems
+
+```
++-----------------------------------------+
+| Application                             |
++-----------------------------------------+
+| OS: scheduler, memory management,       |
+| network, filesystems, clock, entropy,   |
+| keyboard, video, power, user management,|
+| mouse, screensaver, consoles, printers, |
+| ...                                     |
++-----------------------------------------+
+```
+
+## Operating Systems
+
+* at runtime, provide (or don't) things executables ask for
 
 ## Operating Systems
 
 * Is an operating system an executable?
   - it definitely executes
   - it might do any one of the things it knows how to do, depending on the environment
-  - that makes its behavior very hard to predict and understand
 
 ## Operating Systems
 
@@ -52,30 +70,65 @@ https://robur.io
 
 ## Operating Systems
 
-* why do we build executables for operating systems?
-  - to support the largest set of user operations we possibly can
-  - but only sometimes is that desired/appropriate (desktop OS)
-  - in a lot of contexts you already know what set of operations you need
+* consider a web server running "in the cloud"
 
 ## Operating Systems
 
-* consider a web server running "in the cloud"
-  - you really just want it to respond to network requests and interact with a disk, in a deterministic way
-  - you're quite a bit more likely to want more sophisticated *application* code than you are to want additional OS functionality
+```
++------------------------+----------------+
+| User-level Application |  Dependencies  |
++------------------------+----------------+
+| OS: scheduler, memory management,       |
+| network, filesystems, clock, entropy,   |
+| keyboard, video, power, user management,|
+| mouse, screensaver, consoles, printers, |
+| ...                                     |
++-----------------------------------------+
+```
+
+## Operating Systems
+
+```
++------------------------+----------------+
+| User-level Application |  Dependencies  |
++------------------------+----------------+
+| OS: scheduler, memory management,       |
+| network, filesystems, clock, entropy,   |
+| keyboard, video, power, user management,|
+| mouse, screensaver, consoles, printers, |
+| ...                                     |
++-----------------------------------------+
+| Hypervisor: scheduler, memory mgmt,     |
+| network, filesystems, clock, entropy,   |
+| keyboard, video, power,                 |
+| mouse, screensaver, consoles,           |
+| ...                                     |
++-----------------------------------------+
+```
+
+## Better Futures
+
+* in lots of contexts, the only "drivers" we need are hypervisor drivers
+* with a limited scope, replacing existing implementations with something nicer to interface with is less daunting
 
 ## Better Futures
 
 * so if we don't need this maximalist OS that can respond to dynamic requests, can we drop the "executable" bits of the OS?
   - instead of an executable-but-also-kind-of-a-library that runs executables, we have another set of libraries that supports the executable we want
-  - our application declares what bits of the OS it needs
-  - (and since we're building better worlds, why not use whatever language we want to provide those bits?  why not have multiple options?  why not have multiple interfaces, so we can choose the ones we like best?)
+
+## Better Futures
+
+* our application declares what it needs
+  - e.g. knowledge of http, a library for session management, disk access, network
+
+## Better Futures
+
+* when we build, pull *everything* in together, and make a whole machine
 
 ## Better Futures
 
 * building OS+application artifacts with library OSs
-  - so... this exists :)
-  - demonstrate building a "hello localhost :)" static web server
-  - build for virtio and run locally + ship to GCP?  time this
+* demo time!
 
 ## Side Effects
 
