@@ -10,34 +10,34 @@ also me: https://wandering.shop/@yomimono
 ## Where To?
 
 * libraries and executables
-* operating systems: why do we need them, anyway?
-* building better futures
+* operating systems
+* building better futures with library operating systems
 * positive side effects of radical change
 
 ## Libraries and Executables
 
-* libraries: components for re-use in multiple software things
-  - e.g. scipy, ncurses, java stl, ...
-* executables: purpose-built runnable things that do something specific
+* applications: purpose-built runnable things that do something specific
   - e.g. bc, doom, atom, word, firefox, ...
+* libraries: components for re-use in multiple software things
+  - e.g. scipy, ncurses, language-specific standard library, ...
 
 ## Libraries and Executables
 
-* common programming advice: put as much logic in your libraries as you can
-  - it's better to have more reusable bits than non-reusable bits
-  - if you do this, your executables might largely be interfaces to libraries
-
-## Libraries and Executables
-
-* libraries + executable code + build system = application
-* but that's not all you need...
+* what applications are made of:
+  executable code +
+  our libraries +
+  dependencies (other people's libraries) +
+  the language our code is written in +
+  build chain +
+  relevant environments +
+  ...
 
 ## Operating Systems
 
 ```
-+-----------------------------------------+
-| Application                             |
-+-----------------------------------------+
++------------------------+----------------+
+| User-level Application |  Dependencies  |
++------------------------+----------------+
 | OS: scheduler, memory management,       |
 | network, filesystems, clock, entropy,   |
 | keyboard, video, power, user management,|
@@ -52,15 +52,26 @@ also me: https://wandering.shop/@yomimono
 
 ## Operating Systems
 
-* Is an operating system an executable?
-  - it definitely executes
+* Is an operating system an application?
   - it might do any one of the things it knows how to do, depending on the environment
 
 ## Operating Systems
 
 * But maybe it's also a library?
-  - often with a *really* bad API (sockets, ioctls, the Windows equivalent of those things)
-  - or more diplomatically, an API that's opinionated about things you don't care about
+
+```
+int socket(int domain, int type, int protocol);
+/* many integer constants defined below... */
+/* on success, a file descriptor is returned *.
+/* on error, -1 is returned, and errno is set */
+
+int connect(int sockfd, const struct sockaddr *addr,
+            socklen_t addrlen);
+/* socklen_t is "in reality an int" */
+/* on success, 0 is returned */
+/* on error, -1 is returned, and errno is set */
+```
+
 
 ## Operating Systems
 
