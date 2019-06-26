@@ -1,5 +1,7 @@
 # Library Operating Systems: Functional Programming for the Whole System
 
+Hello Haskallywags!
+
 Mindy Preston
 
 team website: https://robur.io
@@ -9,8 +11,7 @@ mastodon: https://wandering.shop/@yomimono
 ## Quick Intro
 
 me, in early 2014: I'm gonna learn some Haskell
-me, six weeks later: this Elm thing sure is shiny
-me, two weeks later still: Oooooh, OCaml library operating system
+me, six weeks later: Oooooh, OCaml library operating system
 me, in mid-2019: still nerd sniped, still doesn't really know Haskell
 
 ## Operating Systems: An Application-Centric View
@@ -158,11 +159,12 @@ and something which is beyond rude: Obj.magic
 
 "nice" OCaml code is Haskell-like
 
-## What do the Libraries Look Like?
+## "Library" OS?
 
 + An interface definiton for common operations
   * "check the time", "get a random number", "send a packet", "write a file"
   * (MirageOS: module types)
+
 + Implementations of that interface
   * "interactions with a btrfs filesystem", "talking over an Ethernet network"
   * (MirageOS: modules)
@@ -275,37 +277,9 @@ let test_application = build application depends \
 
 ## Testing a MirageOS implementation
 
-```ocaml
-let test_marshal_padding () =
-  let buf = Cstruct.create 8 in
-  Cstruct.memset buf 255;
-  let extract = Cstruct.get_uint8 buf in
-  let needs_padding = [ Tcp.Options.SACK_ok ] in
-  check 4 (Tcp.Options.marshal buf needs_padding);
-  check 4 (extract 0);
-  check 2 (extract 1);
-  check 0 (extract 2); (* 0 out everything else *)
-  check 0 (extract 3);
-  check 255 (extract 4); (* but not into random memory *)
-  Lwt.return_unit
-```
-
-## Testing Network Stack
-
-```
-$ ./test.native test tcp_options|grep -v SKIP
-[OK]        tcp_options  0   unmarshal broken mss
-[OK]        tcp_options  1   unmarshal option w/bogus length
-[OK]        tcp_options  2   unmarshal option w/zero length
-[OK]        tcp_options  3   unmarshal simple cases
-[OK]        tcp_options  4   unmarshal stops at eof
-[OK]        tcp_options  5   unmarshal tcp options
-[OK]        tcp_options  6   unmarshal random data returns
-[OK]        tcp_options  7   marshal unknown value
-[OK]        tcp_options  8   marshal when padding is needed
-[OK]        tcp_options  9   marshal the empty list
-Test Successful in 0.015s. 10 tests run.
-```
++ unit tests via a normal framework (oUnit + enhancements)
++ integration tests via the usual package manager (opam install --revdeps)
++ property-based testing and fuzzing <3
 
 ## Wilder Thoughts
 
@@ -325,15 +299,17 @@ Test Successful in 0.015s. 10 tests run.
 
 + QubesOS: hypervisor + nice controls for VMs + nice UI
 + individual VMs are heavy - replace some with unikernels!
-+ qubes-mirage-firewall (https://github.com/talex5/qubes-mirage-firewall)
++ qubes-mirage-firewall (https://github.com/mirage/qubes-mirage-firewall)
 + eye-of-mirage (https://github.com/cfcs/eye-of-mirage)
 + passmenage (https://github.com/cfcs/passmenage)
 + ocaml-ssh-agent (https://github.com/reynir/ocaml-ssh-agent)
 
 ## Thanks!
 
-for your ML family open-mindedness :)
-and your questions!
+to adorable.io for hosting :)
+to Chris for organizing :)
+to you for your ML family open-mindedness :)
+   and your questions!
 
 ## Moar Stuff
 
